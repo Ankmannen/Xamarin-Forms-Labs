@@ -9,8 +9,6 @@ namespace XLabs.Platform.Services.Geolocation
 	using ObjCRuntime;
 	using UIKit;
 
-	using XLabs.Platform.Services.GeoLocation;
-
 	/// <summary>
 	/// Class Geolocator.
 	/// </summary>
@@ -35,13 +33,12 @@ namespace XLabs.Platform.Services.Geolocation
 			_manager.AuthorizationChanged += OnAuthorizationChanged;
 			_manager.Failed += OnFailed;
 
-#if (IOS_8)
 		
 			if (_manager.RespondsToSelector(new Selector("requestWhenInUseAuthorization")))
 			{
 				_manager.RequestWhenInUseAuthorization();
 			}
-#endif			
+
 			if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
 			{
 				_manager.LocationsUpdated += OnLocationsUpdated;
@@ -98,11 +95,8 @@ namespace XLabs.Platform.Services.Geolocation
 		{
 			get
 			{
-#if (IOS_8)
-				return CLLocationManager.Status >= CLAuthorizationStatus.AuthorizedAlways;
-#else
+
 				return CLLocationManager.Status >= CLAuthorizationStatus.Authorized;
-#endif
 			}
 		}
 
@@ -379,7 +373,7 @@ namespace XLabs.Platform.Services.Geolocation
 				p.Speed = location.Speed;
 			}
 
-			//p.Timestamp = new DateTimeOffset(location.Timestamp);
+			p.Timestamp = new DateTimeOffset((DateTime)location.Timestamp);
 
 			_position = p;
 
